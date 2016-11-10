@@ -6,6 +6,8 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace MicroServices.Common.General.Util
 {
@@ -13,18 +15,13 @@ namespace MicroServices.Common.General.Util
     {
         public T Load<T>(string url)
         {
-            var webRequest = WebRequest.Create(url);
-            webRequest.ContentType = "text/json";
-            webRequest.Method = "GET";
+            var client  = new HttpClient();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/json"));
+
+            var response = client.GetStringAsync(url).Result;
 
             T result = default(T);
-
-            var response = webRequest.GetResponse();
-            using (var streamReader = new StreamReader(response.GetResponseStream()))
-            {
-                var jsonString = streamReader.ReadToEnd();
-                result = JsonConvert.DeserializeObject<T>(jsonString);
-            }
+            result = JsonConvert.DeserializeObject<T>(response);
 
             return result;
         }

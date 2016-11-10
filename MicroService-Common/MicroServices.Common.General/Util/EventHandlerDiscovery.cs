@@ -27,7 +27,7 @@ namespace MicroServices.Common.General.Util
             var interfaces = aggType.GetInterfaces();
 
             var instances = from i in aggType.GetInterfaces()
-                            where (i.IsGenericType && handlerInterface.IsAssignableFrom(i.GetGenericTypeDefinition()))
+                            where (i.GetTypeInfo().IsGenericType && handlerInterface.IsAssignableFrom(i.GetGenericTypeDefinition()))
                             select i.GenericTypeArguments[0];
 
             foreach (var i in instances)
